@@ -29,6 +29,7 @@
     <string name="gaming">Gaming</string>
     <string name="power_button">Power button</string>
     <string name="spoofing">Spoofing</string>
+    <string name="volume_button">Volume button</string>
 
     <!-- BeyondOrdinary -->
     <string name="beyond_dashboard_title">Beyond Ordinary</string>
