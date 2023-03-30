@@ -14,18 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
-    android:title="@string/category_lockscreen_title" >
-
-    <PreferenceCategory
-    android:title="@string/general">
-
-    <!-- Enable AOD on charging only -->
-    <com.genesis.support.preferences.SecureSettingSwitchPreference
-        android:key="doze_on_charge"
-        android:title="@string/doze_on_charge_title"
-        android:summary="@string/doze_on_charge_summary" />
-    </PreferenceCategory>
-</PreferenceScreen>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Doze on charge -->
+    <string name="doze_on_charge_title">Always on when charging</string>
+    <string name="doze_on_charge_summary">Always show time and info only when the device is plugged in</string>
+</resources>
