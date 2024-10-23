@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.SearchIndexableResource;
 import android.provider.Settings;
+import android.text.TextUtils;
 
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -50,9 +51,11 @@ public class Lockscreen extends SettingsPreferenceFragment
 
     private static final String AOD_SCHEDULE_KEY = "always_on_display_schedule";
     private static final String POCKET_JUDGE = "pocket_judge";
+    private static final String SCREEN_OFF_UDFPS_ENABLED = "screen_off_udfps_enabled";
 
     private Preference mAODPref;
     private Preference mPocketJudge;
+    private Preference mScreenOffUdfps;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -70,6 +73,23 @@ public class Lockscreen extends SettingsPreferenceFragment
                 com.android.internal.R.bool.config_pocketModeSupported);
         if (!mPocketJudgeSupported) {
             prefScreen.removePreference(mPocketJudge);
+        }
+    }
+
+        mScreenOffUdfps = findPreference(SCREEN_OFF_UDFPS_ENABLED);
+        FingerprintManager mFingerprintManager = (FingerprintManager)
+                getContext().getSystemService(Context.FINGERPRINT_SERVICE);
+
+        if (mFingerprintManager == null || !mFingerprintManager.isHardwareDetected()) {
+            prefScreen.removePreference(mScreenOffUdfps);
+        } else {
+            boolean screenOffUdfpsAvailable = res.getBoolean(
+                    com.android.internal.R.bool.config_supportScreenOffUdfps) ||
+                    !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.config_dozeUdfpsLongPressSensorType));
+            if (!screenOffUdfpsAvailable) {
+                prefScreen.removePreference(mScreenOffUdfps);
+            }
         }
     }
 
@@ -117,6 +137,8 @@ public class Lockscreen extends SettingsPreferenceFragment
         ContentResolver resolver = mContext.getContentResolver();
         Settings.System.putIntForUser(resolver,
                 Settings.System.POCKET_JUDGE, 0, UserHandle.USER_CURRENT);
+        Settings.Secure.putIntForUser(resolver,
+                Settings.Secure.SCREEN_OFF_UDFPS_ENABLED, 0, UserHandle.USER_CURRENT);
     }
 
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
@@ -138,6 +160,20 @@ public class Lockscreen extends SettingsPreferenceFragment
                             com.android.internal.R.bool.config_pocketModeSupported);
                     if (!mPocketJudgeSupported) {
                         keys.add(POCKET_JUDGE);
+                    }
+
+                    FingerprintManager mFingerprintManager = (FingerprintManager)
+                            context.getSystemService(Context.FINGERPRINT_SERVICE);
+                    if (mFingerprintManager == null || !mFingerprintManager.isHardwareDetected()) {
+                        keys.add(SCREEN_OFF_UDFPS_ENABLED);
+                    } else {
+                        boolean screenOffUdfpsAvailable = res.getBoolean(
+                                com.android.internal.R.bool.config_supportScreenOffUdfps) ||
+                                !TextUtils.isEmpty(res.getString(
+                                        com.android.internal.R.string.config_dozeUdfpsLongPressSensorType));
+                        if (!screenOffUdfpsAvailable) {
+                            keys.add(SCREEN_OFF_UDFPS_ENABLED);
+                        }
                     }
 
                     return keys;
